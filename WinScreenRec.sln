@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinScreenRec", "WinScreenRec\WinScreenRec.csproj", "{94C3018B-3F32-43F8-94F0-BA73AB308A14}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94C3018B-3F32-43F8-94F0-BA73AB308A14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94C3018B-3F32-43F8-94F0-BA73AB308A14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94C3018B-3F32-43F8-94F0-BA73AB308A14}.Debug|x64.ActiveCfg = Debug|x64
+		{94C3018B-3F32-43F8-94F0-BA73AB308A14}.Debug|x64.Build.0 = Debug|x64
+		{94C3018B-3F32-43F8-94F0-BA73AB308A14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94C3018B-3F32-43F8-94F0-BA73AB308A14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94C3018B-3F32-43F8-94F0-BA73AB308A14}.Release|x64.ActiveCfg = Release|x64
+		{94C3018B-3F32-43F8-94F0-BA73AB308A14}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9026B130-B865-4690-AC6F-7BDD47C2FE7F}
+	EndGlobalSection
+EndGlobal
