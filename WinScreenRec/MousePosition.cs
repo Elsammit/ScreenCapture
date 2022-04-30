@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -21,14 +22,27 @@ namespace WinScreenRec
 
         private System.Windows.Point InitPos = new System.Windows.Point();
 
+        private UIElement canvasStock = new UIElement();
 
-        public void SetInit(System.Windows.Point point)
+        public bool SetInit(System.Windows.Point point, Canvas canvas)
         {
-            InitPos = point;
+            bool ret = false;
+
+            Console.WriteLine("init Left:{0}, top:{1}", point.X, point.Y);
+            if (point.Y > canvas.Margin.Top && point.Y < (canvas.Margin.Top + canvas.Height) &&
+                point.X > canvas.Margin.Left && point.X < canvas.Margin.Left + canvas.Width)
+            {
+                InitPos = point;
+                ret = true;
+            }
+            return ret;
         }
 
         public Position DrawRectangle(System.Windows.Point point, System.Windows.Controls.Canvas canvas)
         {
+
+            canvas.Children.Remove(canvasStock);
+
             System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
             Position position = new Position();
 
@@ -63,7 +77,38 @@ namespace WinScreenRec
                 position.left = (int)(point.X);
             }
 
+            if (point.Y > canvas.ActualHeight)
+            {
+                Console.WriteLine("UpUp");
+                height = canvas.ActualHeight - InitPos.Y;
+                Canvas.SetTop(rectangle, InitPos.Y);
+                rectangle.Height = height;
+            }
+            else if (point.Y < 0)
+            {
+                Console.WriteLine("DownDown");
+                height = InitPos.Y;
+                Canvas.SetTop(rectangle, 0);
+                rectangle.Height = height;
+            }
+            else if (InitPos.Y < point.Y)
+            {
+                Canvas.SetTop(rectangle, InitPos.Y);
+                position.top = (int)(InitPos.Y);
+            }
+            else
+            {
+                Canvas.SetTop(rectangle, point.Y);
+                position.top = (int)(point.Y);
+            }
 
+            position.width = (int)(width * SystemParameters.PrimaryScreenWidth / canvas.Width);
+            position.height = (int)(height / (int)canvas.Height * (int)SystemParameters.PrimaryScreenHeight);
+            position.top = position.top * (int)(SystemParameters.PrimaryScreenHeight / canvas.Height);
+            position.left = position.left * (int)(SystemParameters.PrimaryScreenWidth / canvas.Width);
+
+            canvas.Children.Add(rectangle);
+            canvasStock = rectangle;
 
             return position;
         }
