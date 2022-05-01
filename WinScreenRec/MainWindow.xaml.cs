@@ -9,6 +9,7 @@ using OpenCvSharp.Extensions;
 using System.Runtime.InteropServices;
 using WinScreenRec;
 using System.Windows.Controls;
+using Microsoft.Win32;
 
 namespace WpfApp1
 {
@@ -28,6 +29,8 @@ namespace WpfApp1
         Thread thread;
         ImgProcess m_ImgProcess = new ImgProcess();
         MousePosition m_MousePosition = new MousePosition();
+        private UIElement canvasStock = new UIElement();
+        
 
 
         public MainWindow()
@@ -45,6 +48,18 @@ namespace WpfApp1
             }
             else
             {
+
+                var dialog = new SaveFileDialog();
+                dialog.Title = "ファイルを保存";
+                dialog.Filter = "動画ファイル|*.wmv";
+                // ダイアログを表示
+                if (dialog.ShowDialog() == true)
+                {
+                    MessageBox.Show(dialog.FileName);
+
+                    m_ImgProcess.SetFilePath(dialog.FileName);
+                }
+
                 isStartRec = true;
                 StartButton.Content = "録画停止";
             }
@@ -82,7 +97,7 @@ namespace WpfApp1
 
         private void WindowLoad(object sender, RoutedEventArgs e)
         {
-            m_ImgProcess.InitVideoWriter();
+            //m_ImgProcess.InitVideoWriter();
             thread = new Thread(new ThreadStart(() =>
             {
                 CaptureMovieAsync();
@@ -110,7 +125,19 @@ namespace WpfApp1
             {
                 Console.WriteLine("Mouse Move");
                 System.Windows.Point pos = e.GetPosition(RectArea);
-                m_MousePosition.DrawRectangle(pos, RectArea);
+                //m_MousePosition.DrawRectangle(pos, RectArea);
+
+                WinScreenRec.MousePosition.Position position = 
+                    new WinScreenRec.MousePosition.Position();
+                System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
+
+                RectArea.Children.Remove(canvasStock);
+
+                m_MousePosition.DrawRectangle(pos, RectArea.Width, RectArea.Height,
+                    ref position, ref rectangle);
+
+                RectArea.Children.Add(rectangle);
+                canvasStock = rectangle;
             }
         }
 

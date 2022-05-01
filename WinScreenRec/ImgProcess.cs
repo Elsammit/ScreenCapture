@@ -12,7 +12,7 @@ namespace WinScreenRec
 {
     class ImgProcess
     {
-        VideoWriter writer;
+        
 
         [DllImport("user32.dll")]
         private static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
@@ -26,10 +26,19 @@ namespace WinScreenRec
             public int bottom;
         }
 
+        VideoWriter writer;
+        string RecordFilePath = "";
+
         public void InitVideoWriter()
         {
-            writer = new VideoWriter("test.wmv", FourCC.WMV1, 5,
+            writer = new VideoWriter(RecordFilePath, FourCC.WMV1, 5,
                     new OpenCvSharp.Size((int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight));
+        }
+
+        public void SetFilePath(string filePath)
+        {
+            RecordFilePath = filePath;
+            InitVideoWriter();
         }
 
         public Bitmap GetCaptureImage(bool isStartRec)

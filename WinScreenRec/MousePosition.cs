@@ -38,13 +38,16 @@ namespace WinScreenRec
             return ret;
         }
 
-        public Position DrawRectangle(System.Windows.Point point, System.Windows.Controls.Canvas canvas)
+        public bool DrawRectangle(System.Windows.Point point, double canvasWidth, double canvasHeight,
+            ref Position position, ref System.Windows.Shapes.Rectangle rectangle)
         {
 
-            canvas.Children.Remove(canvasStock);
+            bool ret = false;
 
-            System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
-            Position position = new Position();
+            //canvas.Children.Remove(canvasStock);
+
+            //System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
+            //Position position = new Position();
 
             rectangle.Stroke = new SolidColorBrush(Colors.Red);
             rectangle.StrokeThickness = 1;
@@ -54,9 +57,9 @@ namespace WinScreenRec
             rectangle.Width = width;
             rectangle.Height = height;
 
-            if (point.X > canvas.ActualWidth)
+            if (point.X > canvasWidth)
             {
-                width = canvas.ActualWidth - InitPos.X;
+                width = canvasWidth - InitPos.X;
                 Canvas.SetLeft(rectangle, InitPos.X);
                 rectangle.Width = width;
             }
@@ -77,10 +80,10 @@ namespace WinScreenRec
                 position.left = (int)(point.X);
             }
 
-            if (point.Y > canvas.ActualHeight)
+            if (point.Y > canvasHeight)
             {
                 Console.WriteLine("UpUp");
-                height = canvas.ActualHeight - InitPos.Y;
+                height = canvasHeight - InitPos.Y;
                 Canvas.SetTop(rectangle, InitPos.Y);
                 rectangle.Height = height;
             }
@@ -102,15 +105,15 @@ namespace WinScreenRec
                 position.top = (int)(point.Y);
             }
 
-            position.width = (int)(width * SystemParameters.PrimaryScreenWidth / canvas.Width);
-            position.height = (int)(height / (int)canvas.Height * (int)SystemParameters.PrimaryScreenHeight);
-            position.top = position.top * (int)(SystemParameters.PrimaryScreenHeight / canvas.Height);
-            position.left = position.left * (int)(SystemParameters.PrimaryScreenWidth / canvas.Width);
+            position.width = (int)(width * SystemParameters.PrimaryScreenWidth / canvasWidth);
+            position.height = (int)(height / (int)canvasHeight * (int)SystemParameters.PrimaryScreenHeight);
+            position.top = position.top * (int)(SystemParameters.PrimaryScreenHeight / canvasHeight);
+            position.left = position.left * (int)(SystemParameters.PrimaryScreenWidth / canvasWidth);
 
-            canvas.Children.Add(rectangle);
-            canvasStock = rectangle;
+            //canvas.Children.Add(rectangle);
+            //canvasStock = rectangle;
 
-            return position;
+            return ret;
         }
     }
 }

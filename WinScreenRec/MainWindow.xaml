@@ -19,6 +19,6 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <Canvas x:Name="RectArea" HorizontalAlignment="Left" Margin="17,18,0,0" VerticalAlignment="Top" Height="343"  Width="525" MouseLeftButtonDown="MouseLeftBtnDwn" MouseMove="MouseMoving" MouseLeftButtonUp="MouseLeftBtnUp" Panel.ZIndex="1" Background="White" OpacityMask="White"/>
+        <Canvas x:Name="RectArea" HorizontalAlignment="Left" Margin="17,18,0,0" VerticalAlignment="Top" Height="343"  Width="525" MouseLeftButtonDown="MouseLeftBtnDwn" MouseMove="MouseMoving" MouseLeftButtonUp="MouseLeftBtnUp" Panel.ZIndex="1" Background="Transparent" OpacityMask="White"/>
     </Grid>
 </Window>
