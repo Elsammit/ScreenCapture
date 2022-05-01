@@ -41,14 +41,16 @@ namespace WinScreenRec
             InitVideoWriter();
         }
 
-        public Bitmap GetCaptureImage(bool isStartRec)
+        public Bitmap GetCaptureImage(bool isStartRec, int CapWidth, int CapHeight)
         {
             var screenBmp = new System.Drawing.Bitmap(
                     (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
                     System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            
             var bmpGraphics = Graphics.FromImage(screenBmp);
             bmpGraphics.CopyFromScreen(0, 0, 0, 0, screenBmp.Size);
-
+            WriteVideo(isStartRec, screenBmp);
+            /*
             Mat mat = BitmapConverter.ToMat(screenBmp).CvtColor(ColorConversionCodes.RGB2BGR);
             if (isStartRec)
             {
@@ -56,7 +58,19 @@ namespace WinScreenRec
                 Cv2.Resize(mat, mat, new OpenCvSharp.Size((int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight));
                 writer.Write(mat);
             }
+            */
             return screenBmp;
+        }
+
+        private void WriteVideo(bool isStartRec, Bitmap screenBmp)
+        {
+            Mat mat = BitmapConverter.ToMat(screenBmp).CvtColor(ColorConversionCodes.RGB2BGR);
+            if (isStartRec)
+            {
+                Cv2.CvtColor(mat, mat, ColorConversionCodes.BGR2RGB);
+                Cv2.Resize(mat, mat, new OpenCvSharp.Size((int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight));
+                writer.Write(mat);
+            }
         }
 
         private bool GetAppPosition(ref RECT rect)

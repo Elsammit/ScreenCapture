@@ -30,7 +30,10 @@ namespace WpfApp1
         ImgProcess m_ImgProcess = new ImgProcess();
         MousePosition m_MousePosition = new MousePosition();
         private UIElement canvasStock = new UIElement();
-        
+        WinScreenRec.MousePosition.Position position =
+                    new WinScreenRec.MousePosition.Position();
+
+
 
 
         public MainWindow()
@@ -70,7 +73,18 @@ namespace WpfApp1
 
             while (isStartPrev)
             {
-                var bitmap = m_ImgProcess.GetCaptureImage(isStartRec);
+                int capWidth = 0;
+                int capHeight = 0;
+                if(position.width <=0 || position.height <= 0)
+                {
+                    capWidth = (int)SystemParameters.PrimaryScreenWidth;
+                    capHeight = (int)SystemParameters.PrimaryScreenHeight;
+                }
+                else {
+                    capWidth = position.width;
+                    capHeight = position.height;
+                }
+                var bitmap = m_ImgProcess.GetCaptureImage(isStartRec, capWidth, capHeight);
                 var hBitmap = bitmap.GetHbitmap();
 
                 Dispatcher.Invoke((Action)(() =>
@@ -97,7 +111,6 @@ namespace WpfApp1
 
         private void WindowLoad(object sender, RoutedEventArgs e)
         {
-            //m_ImgProcess.InitVideoWriter();
             thread = new Thread(new ThreadStart(() =>
             {
                 CaptureMovieAsync();
@@ -127,8 +140,6 @@ namespace WpfApp1
                 System.Windows.Point pos = e.GetPosition(RectArea);
                 //m_MousePosition.DrawRectangle(pos, RectArea);
 
-                WinScreenRec.MousePosition.Position position = 
-                    new WinScreenRec.MousePosition.Position();
                 System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
 
                 RectArea.Children.Remove(canvasStock);
