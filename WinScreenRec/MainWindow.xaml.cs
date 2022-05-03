@@ -34,8 +34,6 @@ namespace WpfApp1
                     new WinScreenRec.MousePosition.Position();
 
 
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -75,6 +73,9 @@ namespace WpfApp1
             {
                 int capWidth = 0;
                 int capHeight = 0;
+                int leftPos = 0;
+                int topPos = 0;
+
                 if(position.width <=0 || position.height <= 0)
                 {
                     capWidth = (int)SystemParameters.PrimaryScreenWidth;
@@ -83,8 +84,10 @@ namespace WpfApp1
                 else {
                     capWidth = position.width;
                     capHeight = position.height;
+                    leftPos = position.left;
+                    topPos = position.top;
                 }
-                var bitmap = m_ImgProcess.GetCaptureImage(isStartRec, capWidth, capHeight);
+                var bitmap = m_ImgProcess.GetCaptureImage(isStartRec, capWidth, capHeight, leftPos, topPos);
                 var hBitmap = bitmap.GetHbitmap();
 
                 Dispatcher.Invoke((Action)(() =>
@@ -120,14 +123,17 @@ namespace WpfApp1
 
         private void MouseLeftBtnDwn(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            Canvas c = sender as Canvas;
-            Console.WriteLine("canvas width:{0}, height:{1}", RectArea.Width, RectArea.Height);
-            var point = e.GetPosition(c);
-            bool buf = m_MousePosition.SetInit(point, RectArea);
-            if (buf)
+            if (!isStartRec)
             {
-                isDrag = buf;
-                c.CaptureMouse();
+                Canvas c = sender as Canvas;
+                Console.WriteLine("canvas width:{0}, height:{1}", RectArea.Width, RectArea.Height);
+                var point = e.GetPosition(c);
+                bool buf = m_MousePosition.SetInit(point, RectArea);
+                if (buf)
+                {
+                    isDrag = buf;
+                    c.CaptureMouse();
+                }
             }
             
         }
@@ -136,9 +142,7 @@ namespace WpfApp1
         {
             if (isDrag)
             {
-                Console.WriteLine("Mouse Move");
                 System.Windows.Point pos = e.GetPosition(RectArea);
-                //m_MousePosition.DrawRectangle(pos, RectArea);
 
                 System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
 
@@ -156,7 +160,6 @@ namespace WpfApp1
         {
             if (isDrag)
             {
-                Console.WriteLine("Mouse Left Up");
                 Canvas c = sender as Canvas;
                 isDrag = false;
                 c.ReleaseMouseCapture();

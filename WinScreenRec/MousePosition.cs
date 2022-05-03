@@ -44,11 +44,6 @@ namespace WinScreenRec
 
             bool ret = false;
 
-            //canvas.Children.Remove(canvasStock);
-
-            //System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
-            //Position position = new Position();
-
             rectangle.Stroke = new SolidColorBrush(Colors.Red);
             rectangle.StrokeThickness = 1;
 
@@ -109,9 +104,6 @@ namespace WinScreenRec
             position.height = (int)(height / (int)canvasHeight * (int)SystemParameters.PrimaryScreenHeight);
             position.top = position.top * (int)(SystemParameters.PrimaryScreenHeight / canvasHeight);
             position.left = position.left * (int)(SystemParameters.PrimaryScreenWidth / canvasWidth);
-
-            //canvas.Children.Add(rectangle);
-            //canvasStock = rectangle;
 
             return ret;
         }

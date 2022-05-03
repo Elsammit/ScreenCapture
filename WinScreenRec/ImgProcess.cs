@@ -12,8 +12,6 @@ namespace WinScreenRec
 {
     class ImgProcess
     {
-        
-
         [DllImport("user32.dll")]
         private static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
 
@@ -41,7 +39,7 @@ namespace WinScreenRec
             InitVideoWriter();
         }
 
-        public Bitmap GetCaptureImage(bool isStartRec, int CapWidth, int CapHeight)
+        public Bitmap GetCaptureImage(bool isStartRec, int CapWidth, int CapHeight, int LeftPos, int TopPos)
         {
             var screenBmp = new System.Drawing.Bitmap(
                     (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
@@ -49,22 +47,17 @@ namespace WinScreenRec
             
             var bmpGraphics = Graphics.FromImage(screenBmp);
             bmpGraphics.CopyFromScreen(0, 0, 0, 0, screenBmp.Size);
-            WriteVideo(isStartRec, screenBmp);
-            /*
-            Mat mat = BitmapConverter.ToMat(screenBmp).CvtColor(ColorConversionCodes.RGB2BGR);
-            if (isStartRec)
-            {
-                Cv2.CvtColor(mat, mat, ColorConversionCodes.BGR2RGB);
-                Cv2.Resize(mat, mat, new OpenCvSharp.Size((int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight));
-                writer.Write(mat);
-            }
-            */
+            WriteVideo(isStartRec, screenBmp, CapWidth, CapHeight, LeftPos, TopPos);
+
             return screenBmp;
         }
 
-        private void WriteVideo(bool isStartRec, Bitmap screenBmp)
+        private void WriteVideo(bool isStartRec, Bitmap screenBmp, int CapWidth, int CapHeight, int LeftPos, int TopPos)
         {
-            Mat mat = BitmapConverter.ToMat(screenBmp).CvtColor(ColorConversionCodes.RGB2BGR);
+            System.Drawing.Rectangle recta = new System.Drawing.Rectangle(LeftPos, TopPos,
+                        CapWidth, CapHeight);
+            Bitmap bmp = screenBmp.Clone(recta, screenBmp.PixelFormat);
+            Mat mat = BitmapConverter.ToMat(bmp).CvtColor(ColorConversionCodes.RGB2BGR);
             if (isStartRec)
             {
                 Cv2.CvtColor(mat, mat, ColorConversionCodes.BGR2RGB);
