@@ -71,23 +71,22 @@ namespace WpfApp1
 
             while (isStartPrev)
             {
-                int capWidth = 0;
-                int capHeight = 0;
-                int leftPos = 0;
-                int topPos = 0;
+                ImgProcess.RECT m_RECT = new ImgProcess.RECT(); 
 
                 if(position.width <=0 || position.height <= 0)
                 {
-                    capWidth = (int)SystemParameters.PrimaryScreenWidth;
-                    capHeight = (int)SystemParameters.PrimaryScreenHeight;
+                    m_RECT.right = (int)SystemParameters.PrimaryScreenWidth;
+                    m_RECT.bottom = (int)SystemParameters.PrimaryScreenHeight;
+                    m_RECT.left = 0;
+                    m_RECT.top = 0;
                 }
                 else {
-                    capWidth = position.width;
-                    capHeight = position.height;
-                    leftPos = position.left;
-                    topPos = position.top;
+                    m_RECT.right = position.width + position.left;
+                    m_RECT.bottom = position.height + position.top;
+                    m_RECT.left = position.left;
+                    m_RECT.top = position.top;
                 }
-                var bitmap = m_ImgProcess.GetCaptureImage(isStartRec, capWidth, capHeight, leftPos, topPos);
+                var bitmap = m_ImgProcess.GetCaptureImage(isStartRec, m_RECT);
                 var hBitmap = bitmap.GetHbitmap();
 
                 Dispatcher.Invoke((Action)(() =>
@@ -126,7 +125,7 @@ namespace WpfApp1
             if (!isStartRec)
             {
                 Canvas c = sender as Canvas;
-                Console.WriteLine("canvas width:{0}, height:{1}", RectArea.Width, RectArea.Height);
+                Console.WriteLine("canvas width:{0}, height:{1}", RectArea.ActualWidth, RectArea.ActualHeight);
                 var point = e.GetPosition(c);
                 bool buf = m_MousePosition.SetInit(point, RectArea);
                 if (buf)

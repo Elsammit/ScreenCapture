@@ -16,7 +16,7 @@ namespace WinScreenRec
         private static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct RECT
+        public struct RECT
         {
             public int left;
             public int top;
@@ -39,7 +39,7 @@ namespace WinScreenRec
             InitVideoWriter();
         }
 
-        public Bitmap GetCaptureImage(bool isStartRec, int CapWidth, int CapHeight, int LeftPos, int TopPos)
+        public Bitmap GetCaptureImage(bool isStartRec, RECT rect)
         {
             var screenBmp = new System.Drawing.Bitmap(
                     (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
@@ -47,15 +47,22 @@ namespace WinScreenRec
             
             var bmpGraphics = Graphics.FromImage(screenBmp);
             bmpGraphics.CopyFromScreen(0, 0, 0, 0, screenBmp.Size);
-            WriteVideo(isStartRec, screenBmp, CapWidth, CapHeight, LeftPos, TopPos);
+            WriteVideo(isStartRec, screenBmp, rect);
 
             return screenBmp;
         }
 
-        private void WriteVideo(bool isStartRec, Bitmap screenBmp, int CapWidth, int CapHeight, int LeftPos, int TopPos)
+        private void WriteVideo(bool isStartRec, Bitmap screenBmp, RECT rect)
         {
-            System.Drawing.Rectangle recta = new System.Drawing.Rectangle(LeftPos, TopPos,
-                        CapWidth, CapHeight);
+            int capWidth = rect.right - rect.left;
+            int capHeight = rect.bottom - rect.top;
+            if (capHeight <= 0 || capWidth <= 0)
+            {
+                Console.WriteLine(" size Error");
+                return;
+            }
+            System.Drawing.Rectangle recta = new System.Drawing.Rectangle(rect.left, rect.top,
+                        capWidth, capHeight);
             Bitmap bmp = screenBmp.Clone(recta, screenBmp.PixelFormat);
             Mat mat = BitmapConverter.ToMat(bmp).CvtColor(ColorConversionCodes.RGB2BGR);
             if (isStartRec)

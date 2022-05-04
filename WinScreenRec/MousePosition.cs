@@ -52,7 +52,7 @@ namespace WinScreenRec
             rectangle.Width = width;
             rectangle.Height = height;
 
-            if (point.X > canvasWidth)
+            if (point.X > canvasWidth - 1)
             {
                 width = canvasWidth - InitPos.X;
                 Canvas.SetLeft(rectangle, InitPos.X);
@@ -75,7 +75,7 @@ namespace WinScreenRec
                 position.left = (int)(point.X);
             }
 
-            if (point.Y > canvasHeight)
+            if (point.Y > canvasHeight - 1)
             {
                 Console.WriteLine("UpUp");
                 height = canvasHeight - InitPos.Y;
@@ -100,10 +100,10 @@ namespace WinScreenRec
                 position.top = (int)(point.Y);
             }
 
-            position.width = (int)(width * SystemParameters.PrimaryScreenWidth / canvasWidth);
-            position.height = (int)(height / (int)canvasHeight * (int)SystemParameters.PrimaryScreenHeight);
-            position.top = position.top * (int)(SystemParameters.PrimaryScreenHeight / canvasHeight);
-            position.left = position.left * (int)(SystemParameters.PrimaryScreenWidth / canvasWidth);
+            position.width = (int)(width * (SystemParameters.PrimaryScreenWidth / canvasWidth));
+            position.height = (int)(height * (SystemParameters.PrimaryScreenHeight / canvasHeight));
+            position.top = (int)(position.top * (SystemParameters.PrimaryScreenHeight / canvasHeight));
+            position.left = (int)(position.left * (SystemParameters.PrimaryScreenWidth / canvasWidth));
 
             return ret;
         }
