@@ -26,17 +26,21 @@ namespace WinScreenRec
 
         VideoWriter writer;
         string RecordFilePath = "";
+        RECT m_recordData = new RECT();
 
-        public void InitVideoWriter()
+        public void InitVideoWriter(RECT rect)
         {
+            m_recordData = rect;
+            int width = m_recordData.right - m_recordData.left;
+            int height = m_recordData.bottom - m_recordData.top;
             writer = new VideoWriter(RecordFilePath, FourCC.WMV1, 5,
-                    new OpenCvSharp.Size((int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight));
+                    new OpenCvSharp.Size(width, height));
         }
 
-        public void SetFilePath(string filePath)
+        public void SetFilePath(string filePath, RECT rect)
         {
             RecordFilePath = filePath;
-            InitVideoWriter();
+            InitVideoWriter(rect);
         }
 
         public Bitmap GetCaptureImage(bool isStartRec, RECT rect)
@@ -54,8 +58,11 @@ namespace WinScreenRec
 
         private void WriteVideo(bool isStartRec, Bitmap screenBmp, RECT rect)
         {
-            int capWidth = rect.right - rect.left;
-            int capHeight = rect.bottom - rect.top;
+            m_recordData = rect;
+
+            int capWidth = m_recordData.right - m_recordData.left;
+            int capHeight = m_recordData.bottom - m_recordData.top;
+         
             if (capHeight <= 0 || capWidth <= 0)
             {
                 Console.WriteLine(" size Error");
@@ -68,7 +75,7 @@ namespace WinScreenRec
             if (isStartRec)
             {
                 Cv2.CvtColor(mat, mat, ColorConversionCodes.BGR2RGB);
-                Cv2.Resize(mat, mat, new OpenCvSharp.Size((int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight));
+                Cv2.Resize(mat, mat, new OpenCvSharp.Size(capWidth, capHeight));
                 writer.Write(mat);
             }
         }

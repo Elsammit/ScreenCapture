@@ -32,7 +32,7 @@ namespace WpfApp1
         private UIElement canvasStock = new UIElement();
         WinScreenRec.MousePosition.Position position =
                     new WinScreenRec.MousePosition.Position();
-
+        ImgProcess.RECT m_RECT = new ImgProcess.RECT();
 
         public MainWindow()
         {
@@ -58,11 +58,10 @@ namespace WpfApp1
                 {
                     MessageBox.Show(dialog.FileName);
 
-                    m_ImgProcess.SetFilePath(dialog.FileName);
+                    m_ImgProcess.SetFilePath(dialog.FileName, m_RECT);
+                    isStartRec = true;
+                    StartButton.Content = "録画停止";
                 }
-
-                isStartRec = true;
-                StartButton.Content = "録画停止";
             }
         }
 
@@ -71,8 +70,6 @@ namespace WpfApp1
 
             while (isStartPrev)
             {
-                ImgProcess.RECT m_RECT = new ImgProcess.RECT(); 
-
                 if(position.width <=0 || position.height <= 0)
                 {
                     m_RECT.right = (int)SystemParameters.PrimaryScreenWidth;
