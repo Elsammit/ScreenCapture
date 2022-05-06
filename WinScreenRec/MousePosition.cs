@@ -27,8 +27,6 @@ namespace WinScreenRec
         public bool SetInit(System.Windows.Point point, Canvas canvas)
         {
             bool ret = false;
-
-            Console.WriteLine("init Left:{0}, top:{1}", point.X, point.Y);
             if (point.Y > canvas.Margin.Top && point.Y < (canvas.Margin.Top + canvas.Height) &&
                 point.X > canvas.Margin.Left && point.X < canvas.Margin.Left + canvas.Width)
             {
@@ -79,7 +77,6 @@ namespace WinScreenRec
 
             if (point.Y > canvasHeight - 1)
             {
-                Console.WriteLine("UpUp");
                 height = canvasHeight - InitPos.Y;
                 Canvas.SetTop(rectangle, InitPos.Y);
                 rectangle.Height = height;
@@ -87,7 +84,6 @@ namespace WinScreenRec
             }
             else if (point.Y < 0)
             {
-                Console.WriteLine("DownDown");
                 height = InitPos.Y;
                 Canvas.SetTop(rectangle, 0);
                 rectangle.Height = height;

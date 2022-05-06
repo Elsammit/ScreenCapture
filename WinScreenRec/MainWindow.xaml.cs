@@ -18,8 +18,6 @@ namespace WpfApp1
     /// </summary>
     public partial class MainWindow : System.Windows.Window
     {
-
-
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
 
@@ -37,6 +35,8 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+            RecBlock.Opacity = 0;
+            RecTimer.Opacity = 0;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -46,28 +46,29 @@ namespace WpfApp1
             {
                 isStartRec = false;
                 StartButton.Content = "録画開始";
+                RecBlock.Opacity = 0;
+                RecTimer.Opacity = 0;
             }
             else
             {
-
                 var dialog = new SaveFileDialog();
                 dialog.Title = "ファイルを保存";
                 dialog.Filter = "動画ファイル|*.wmv";
                 // ダイアログを表示
                 if (dialog.ShowDialog() == true)
                 {
-                    MessageBox.Show(dialog.FileName);
-
                     m_ImgProcess.SetFilePath(dialog.FileName, m_RECT);
                     isStartRec = true;
                     StartButton.Content = "録画停止";
+                    RecBlock.Opacity = 100;
+                    RecTimer.Opacity = 100;
                 }
             }
         }
 
         private void CaptureMovieAsync()
         {
-
+            int timerCnt = 0;
             while (isStartPrev)
             {
                 if(position.width <=0 || position.height <= 0)
@@ -86,6 +87,14 @@ namespace WpfApp1
                 var bitmap = m_ImgProcess.GetCaptureImage(isStartRec, m_RECT);
                 var hBitmap = bitmap.GetHbitmap();
 
+                if (isStartRec)
+                {
+                    timerCnt++;
+                }
+
+                int sec = (timerCnt / 10) % 60;
+                int minute = (timerCnt / 10) / 60;
+
                 Dispatcher.Invoke((Action)(() =>
                 {
                     ImgCap.Source = Imaging.CreateBitmapSourceFromHBitmap(
@@ -94,6 +103,7 @@ namespace WpfApp1
                     Int32Rect.Empty,
                     BitmapSizeOptions.FromEmptyOptions());
 
+                    RecTimer.Content = minute.ToString("00") + ":" + sec.ToString("00");
                 }));
                 DeleteObject(hBitmap);
                 Cv2.WaitKey(90);
@@ -122,7 +132,6 @@ namespace WpfApp1
             if (!isStartRec)
             {
                 Canvas c = sender as Canvas;
-                Console.WriteLine("canvas width:{0}, height:{1}", RectArea.ActualWidth, RectArea.ActualHeight);
                 var point = e.GetPosition(c);
                 bool buf = m_MousePosition.SetInit(point, RectArea);
                 if (buf)

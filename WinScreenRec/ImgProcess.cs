@@ -30,7 +30,7 @@ namespace WinScreenRec
 
         public void InitVideoWriter(RECT rect)
         {
-            m_recordData = rect;
+            //m_recordData = rect;
             int width = m_recordData.right - m_recordData.left;
             int height = m_recordData.bottom - m_recordData.top;
             writer = new VideoWriter(RecordFilePath, FourCC.WMV1, 5,
@@ -46,17 +46,22 @@ namespace WinScreenRec
         public Bitmap GetCaptureImage(bool isStartRec, RECT rect)
         {
             var screenBmp = new System.Drawing.Bitmap(
+
                     (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
                     System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             
             var bmpGraphics = Graphics.FromImage(screenBmp);
             bmpGraphics.CopyFromScreen(0, 0, 0, 0, screenBmp.Size);
-            WriteVideo(isStartRec, screenBmp, rect);
+            if(!WriteVideo(isStartRec, screenBmp, rect))
+            {
+                MessageBox.Show("正しくエリアを指定ください", "エリア指定エラー", 
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             return screenBmp;
         }
 
-        private void WriteVideo(bool isStartRec, Bitmap screenBmp, RECT rect)
+        private bool WriteVideo(bool isStartRec, Bitmap screenBmp, RECT rect)
         {
             m_recordData = rect;
 
@@ -66,11 +71,11 @@ namespace WinScreenRec
             if (capHeight <= 0 || capWidth <= 0)
             {
                 Console.WriteLine(" size Error");
-                return;
+                return false;
             }
-            System.Drawing.Rectangle recta = new System.Drawing.Rectangle(rect.left, rect.top,
+            System.Drawing.Rectangle rectBuf = new System.Drawing.Rectangle(rect.left, rect.top,
                         capWidth, capHeight);
-            Bitmap bmp = screenBmp.Clone(recta, screenBmp.PixelFormat);
+            Bitmap bmp = screenBmp.Clone(rectBuf, screenBmp.PixelFormat);
             Mat mat = BitmapConverter.ToMat(bmp).CvtColor(ColorConversionCodes.RGB2BGR);
             if (isStartRec)
             {
@@ -78,6 +83,7 @@ namespace WinScreenRec
                 Cv2.Resize(mat, mat, new OpenCvSharp.Size(capWidth, capHeight));
                 writer.Write(mat);
             }
+            return true;
         }
 
         private bool GetAppPosition(ref RECT rect)
