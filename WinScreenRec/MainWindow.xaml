@@ -6,13 +6,13 @@
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
         Title="ScreenCaptureツール" Height="792.901" Width="1485.972" Closing="CloseWindow" Loaded="WindowLoad"
-        ResizeMode="NoResize" Icon="DispIcon.jpeg">
+        ResizeMode="NoResize" Icon="DispIcon.jpeg" Background="#FF5D5D5D">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Canvas x:Name="RectArea" HorizontalAlignment="Left" Margin="17,18,0,0" VerticalAlignment="Top" Height="720"  Width="1280" MouseLeftButtonDown="MouseLeftBtnDwn" MouseMove="MouseMoving" MouseLeftButtonUp="MouseLeftBtnUp" Panel.ZIndex="1" Background="Transparent" OpacityMask="White"/>
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="720" Margin="17,18,0,0" VerticalAlignment="Top" Width="1280">
+        <Canvas x:Name="RectArea" HorizontalAlignment="Left" Margin="17,18,0,0" VerticalAlignment="Top" Height="720"  Width="1280" MouseLeftButtonDown="MouseLeftBtnDwn" MouseMove="MouseMoving" MouseLeftButtonUp="MouseLeftBtnUp" Panel.ZIndex="1" Background="White" OpacityMask="White"/>
+        <Border BorderBrush="White" BorderThickness="1" HorizontalAlignment="Left" Height="720" Margin="17,18,0,0" VerticalAlignment="Top" Width="1280">
             <Image x:Name="ImgCap" HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="1280" Margin="0,0,0,0"/>
         </Border>
         <Button x:Name="StartButton" Content="録画開始" HorizontalAlignment="Left" Height="74" Margin="1317,659,0,0" VerticalAlignment="Top" Width="136" Click="Button_Click" RenderTransformOrigin="1.155,1.833" Panel.ZIndex="2" FontSize="24">
@@ -28,6 +28,6 @@
         <Border x:Name="RecBlock" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="56" Margin="1332,32,0,0" VerticalAlignment="Top" Width="122" CornerRadius="30" Background="#FFFB4646" RenderTransformOrigin="-6.375,10.312">
             <TextBlock TextWrapping="Wrap" Text="REC" Margin="19,11" TextAlignment="Center" Foreground="White" FontSize="24"/>
         </Border>
-        <Label x:Name="RecTimer" Content="00:00" HorizontalAlignment="Left" Margin="1350,115,0,0" VerticalAlignment="Top" Height="40" Width="98" FontSize="24"/>
+        <Label x:Name="RecTimer" Content="00:00" HorizontalAlignment="Left" Margin="1358,109,0,0" VerticalAlignment="Top" Height="40" Width="76" FontSize="24" Foreground="White"/>
     </Grid>
 </Window>

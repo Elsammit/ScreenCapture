@@ -44,10 +44,7 @@ namespace WpfApp1
 
             if (isStartRec)
             {
-                isStartRec = false;
-                StartButton.Content = "録画開始";
-                RecBlock.Opacity = 0;
-                RecTimer.Opacity = 0;
+                ButtonToRecStop();
             }
             else
             {
@@ -58,12 +55,25 @@ namespace WpfApp1
                 if (dialog.ShowDialog() == true)
                 {
                     m_ImgProcess.SetFilePath(dialog.FileName, m_RECT);
-                    isStartRec = true;
-                    StartButton.Content = "録画停止";
-                    RecBlock.Opacity = 100;
-                    RecTimer.Opacity = 100;
+                    ButtonToRecStart();
                 }
             }
+        }
+
+        private void ButtonToRecStop()
+        {
+            isStartRec = false;
+            StartButton.Content = "録画開始";
+            RecBlock.Opacity = 0;
+            RecTimer.Opacity = 0;
+        }
+
+        private void ButtonToRecStart()
+        {
+            isStartRec = true;
+            StartButton.Content = "録画停止";
+            RecBlock.Opacity = 100;
+            RecTimer.Opacity = 100;
         }
 
         private void CaptureMovieAsync()
@@ -91,6 +101,10 @@ namespace WpfApp1
                 {
                     timerCnt++;
                 }
+                else
+                {
+                    timerCnt = 0;
+                }
 
                 int sec = (timerCnt / 10) % 60;
                 int minute = (timerCnt / 10) / 60;
@@ -104,9 +118,22 @@ namespace WpfApp1
                     BitmapSizeOptions.FromEmptyOptions());
 
                     RecTimer.Content = minute.ToString("00") + ":" + sec.ToString("00");
+
+                    if (timerCnt >= 30)
+                    {
+                        isStartRec = false;
+                        timerCnt = 0;
+
+                        var win = new CustomMsgBox();
+                        win.Owner = this;
+                        win.ShowDialog();
+                        
+                        ButtonToRecStop();
+
+                    }
                 }));
                 DeleteObject(hBitmap);
-                Cv2.WaitKey(90);
+                Cv2.WaitKey(80);
             }
         }
 
@@ -161,6 +188,10 @@ namespace WpfApp1
             }
         }
 
+        /**
+         * エリア指定領域
+         * 
+         */
         private void MouseLeftBtnUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (isDrag)
