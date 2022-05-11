@@ -119,7 +119,7 @@ namespace WpfApp1
 
                     RecTimer.Content = minute.ToString("00") + ":" + sec.ToString("00");
 
-                    if (timerCnt >= 30)
+                    if (timerCnt >= 18000)
                     {
                         isStartRec = false;
                         timerCnt = 0;
