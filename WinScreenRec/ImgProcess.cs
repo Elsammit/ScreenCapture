@@ -46,7 +46,6 @@ namespace WinScreenRec
         public Bitmap GetCaptureImage(bool isStartRec, RECT rect)
         {
             var screenBmp = new System.Drawing.Bitmap(
-
                     (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
                     System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             

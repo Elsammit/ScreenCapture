@@ -24,6 +24,7 @@ namespace WpfApp1
         bool isStartRec = false;
         bool isStartPrev = true;
         bool isDrag = false;
+        bool isDragMoved = false;
         Thread thread;
         ImgProcess m_ImgProcess = new ImgProcess();
         MousePosition m_MousePosition = new MousePosition();
@@ -164,6 +165,7 @@ namespace WpfApp1
                 if (buf)
                 {
                     isDrag = buf;
+                    isDragMoved = false;
                     c.CaptureMouse();
                 }
             }
@@ -174,6 +176,8 @@ namespace WpfApp1
         {
             if (isDrag)
             {
+                isDragMoved = true;
+
                 System.Windows.Point pos = e.GetPosition(RectArea);
 
                 System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
@@ -194,6 +198,12 @@ namespace WpfApp1
          */
         private void MouseLeftBtnUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            if (!isDragMoved)
+            {
+                RectArea.Children.Remove(canvasStock);
+                position = new WinScreenRec.MousePosition.Position();
+            }
+
             if (isDrag)
             {
                 Canvas c = sender as Canvas;

@@ -11,7 +11,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Canvas x:Name="RectArea" HorizontalAlignment="Left" Margin="17,18,0,0" VerticalAlignment="Top" Height="720"  Width="1280" MouseLeftButtonDown="MouseLeftBtnDwn" MouseMove="MouseMoving" MouseLeftButtonUp="MouseLeftBtnUp" Panel.ZIndex="1" Background="White" OpacityMask="White"/>
+        <Canvas x:Name="RectArea" HorizontalAlignment="Left" Margin="17,18,0,0" VerticalAlignment="Top" Height="720"  Width="1280" MouseLeftButtonDown="MouseLeftBtnDwn" MouseMove="MouseMoving" MouseLeftButtonUp="MouseLeftBtnUp" Panel.ZIndex="1" Background="Transparent" OpacityMask="Gray"/>
         <Border BorderBrush="White" BorderThickness="1" HorizontalAlignment="Left" Height="720" Margin="17,18,0,0" VerticalAlignment="Top" Width="1280">
             <Image x:Name="ImgCap" HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="1280" Margin="0,0,0,0"/>
         </Border>
