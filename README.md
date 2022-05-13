@@ -10,7 +10,6 @@
 
 
 録画した結果はこちらのように指定したエリアのみが録画されます。
-![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/Record.gif)
 
 ## 使い方
 
