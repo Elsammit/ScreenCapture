@@ -33,8 +33,12 @@ namespace WpfApp1
                     new WinScreenRec.MousePosition.Position();
         ImgProcess.RECT m_RECT = new ImgProcess.RECT();
 
+        
+
         public MainWindow()
         {
+
+
             InitializeComponent();
             RecBlock.Opacity = 0;
             RecTimer.Opacity = 0;
@@ -144,6 +148,8 @@ namespace WpfApp1
             isStartPrev = false;
             isStartRec = false;
             thread.Abort();
+            
+
         }
 
         private void WindowLoad(object sender, RoutedEventArgs e)
