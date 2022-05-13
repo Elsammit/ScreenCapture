@@ -2,7 +2,7 @@
 画面スクリーンの録画が行えるアプリケーションです。
 自分で指定したエリアに限定して録画をすることができます。
 録画データは.mp4ファイルです。
-![Uploading WriteRect3.gif…]()
+![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/WriteRect3.gif)
 
 ## 使い方
 
