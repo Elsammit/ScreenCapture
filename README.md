@@ -5,11 +5,10 @@
 
 録画データは.wmvファイルです。
 
-![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/WriteRect3.gif)
-
-
+![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/AppImage.gif)
 
 録画した結果はこちらのように指定したエリアのみが録画されます。
+![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/Record.gif)
 
 ## 使い方
 
