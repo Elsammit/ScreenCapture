@@ -12,7 +12,7 @@
 
 ![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/AfterRec.gif)
 
-録画を終了する際には右下録画終了ボタンを押してください。
+録画を終了する際には右下録画停止ボタンを押してください。
 
 録画した結果はこちらのように指定したエリアのみが録画されます。
 
