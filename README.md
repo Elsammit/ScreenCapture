@@ -8,7 +8,14 @@
 
 ![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/AppImage.gif)
 
+録画中画面はこちらの通り、右上にRecと録画時間が表示されます。
+
+![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/AfterRec.gif)
+
+録画を終了する際には右下録画終了ボタンを押してください。
+
 録画した結果はこちらのように指定したエリアのみが録画されます。
+
 ![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/Record.gif)
 
 ## 動作確認環境
@@ -17,8 +24,7 @@
 
 　・メモリ：8GB以上
 　
-　・ディスプレイ：・デュアルディスプレイ以上で使用ください。
- 
+　・ディスプレイ：デュアルディスプレイ以上で使用ください。
  
 　　※シングルディスプレイですと、
 
