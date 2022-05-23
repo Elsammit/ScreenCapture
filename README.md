@@ -8,7 +8,7 @@
 
 ![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/AppImage.gif)
 
-#### 録画中の画面
+### 録画中の画面
 
 録画中画面はこちらの通り、右上にRecと録画時間が表示されます。
 
@@ -16,7 +16,7 @@
 
 ![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/AfterRec.gif)
 
-#### 録画した画面
+### 録画した画面
 
 録画した結果はこちらのように指定したエリアのみが録画されます。
 
