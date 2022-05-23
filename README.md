@@ -4,9 +4,15 @@
 
 自分で指定したエリアに限定して録画をすることができます。
 
+
+
+### 起動時の画面
+
 録画データは.wmvファイルです。
 
 ![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/AppImage.gif)
+
+
 
 ### 録画中の画面
 
@@ -16,11 +22,14 @@
 
 ![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/AfterRec.gif)
 
+
+
 ### 録画した画面
 
 録画した結果はこちらのように指定したエリアのみが録画されます。
 
 ![gif](https://github.com/Elsammit/ScreenCapture/blob/master/Sample/Record.gif)
+
 
 ## 動作確認環境
 
@@ -36,6 +45,7 @@
    
    
 　・ディスプレイ解像度：1920x1080
+
 
 ## 使い方
 
