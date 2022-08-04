@@ -27,12 +27,12 @@ namespace WinScreenRec
         public bool SetInit(System.Windows.Point point, Canvas canvas)
         {
             bool ret = false;
-            if (point.Y > canvas.Margin.Top && point.Y < (canvas.Margin.Top + canvas.Height) &&
-                point.X > canvas.Margin.Left && point.X < canvas.Margin.Left + canvas.Width)
-            {
+            //if (point.Y > canvas.Margin.Top && point.Y < (canvas.Margin.Top + canvas.Height) &&
+            //    point.X > canvas.Margin.Left && point.X < canvas.Margin.Left + canvas.Width)
+            //{
                 InitPos = point;
                 ret = true;
-            }
+            //}
             return ret;
         }
 

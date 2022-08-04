@@ -5,14 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="ScreenCaptureツール" Height="792.901" Width="1485.972" Closing="CloseWindow" Loaded="WindowLoad"
-        ResizeMode="NoResize" Icon="DispIcon.jpeg" Background="#FF5D5D5D">
+        Title="ScreenCaptureツール" Height="792.901" Width="1485.972" Closing="CloseWindow" Loaded="WindowLoad" Icon="DispIcon.jpeg"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="#00FFFFFF" Topmost="True" WindowState="Maximized">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Canvas x:Name="RectArea" HorizontalAlignment="Left" Margin="17,18,0,0" VerticalAlignment="Top" Height="720"  Width="1280" MouseLeftButtonDown="MouseLeftBtnDwn" MouseMove="MouseMoving" MouseLeftButtonUp="MouseLeftBtnUp" Panel.ZIndex="1" Background="Transparent" OpacityMask="Gray"/>
-        <Border BorderBrush="White" BorderThickness="1" HorizontalAlignment="Left" Height="720" Margin="17,18,0,0" VerticalAlignment="Top" Width="1280">
+        <Canvas x:Name="RectArea" Margin="0,0,0,0" MouseLeftButtonDown="MouseLeftBtnDwn" MouseMove="MouseMoving" MouseLeftButtonUp="MouseLeftBtnUp" Panel.ZIndex="1" Background="#0FFFFFFF" OpacityMask="Gray"/>
+        <Border BorderBrush="White" BorderThickness="1" Margin="5,5,5,5">
             <Image x:Name="ImgCap" HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="1280" Margin="0,0,0,0"/>
         </Border>
         <Button x:Name="StartButton" Content="録画開始" HorizontalAlignment="Left" Height="74" Margin="1317,659,0,0" VerticalAlignment="Top" Width="136" Click="Button_Click" RenderTransformOrigin="1.155,1.833" Panel.ZIndex="2" FontSize="24">

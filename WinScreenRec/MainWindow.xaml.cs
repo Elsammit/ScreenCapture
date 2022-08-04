@@ -114,31 +114,31 @@ namespace WpfApp1
                 int sec = (timerCnt / 10) % 60;
                 int minute = (timerCnt / 10) / 60;
 
-                Dispatcher.Invoke((Action)(() =>
-                {
-                    ImgCap.Source = Imaging.CreateBitmapSourceFromHBitmap(
-                    hBitmap,
-                    IntPtr.Zero,
-                    Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions());
+                //Dispatcher.Invoke((Action)(() =>
+                //{
+                //    ImgCap.Source = Imaging.CreateBitmapSourceFromHBitmap(
+                //    hBitmap,
+                //    IntPtr.Zero,
+                //    Int32Rect.Empty,
+                //    BitmapSizeOptions.FromEmptyOptions());
 
-                    RecTimer.Content = minute.ToString("00") + ":" + sec.ToString("00");
+                //    RecTimer.Content = minute.ToString("00") + ":" + sec.ToString("00");
 
-                    if (timerCnt >= 18000)
-                    {
-                        isStartRec = false;
-                        timerCnt = 0;
+                //    if (timerCnt >= 18000)
+                //    {
+                //        isStartRec = false;
+                //        timerCnt = 0;
 
-                        var win = new CustomMsgBox();
-                        win.Owner = this;
-                        win.ShowDialog();
+                //        var win = new CustomMsgBox();
+                //        win.Owner = this;
+                //        win.ShowDialog();
                         
-                        ButtonToRecStop();
+                //        ButtonToRecStop();
 
-                    }
-                }));
-                DeleteObject(hBitmap);
-                Cv2.WaitKey(80);
+                //    }
+                //}));
+                //DeleteObject(hBitmap);
+                //Cv2.WaitKey(80);
             }
         }
 
@@ -182,6 +182,7 @@ namespace WpfApp1
         {
             if (isDrag)
             {
+                Console.WriteLine("AAAAAAAAAAAA");
                 isDragMoved = true;
 
                 System.Windows.Point pos = e.GetPosition(RectArea);
