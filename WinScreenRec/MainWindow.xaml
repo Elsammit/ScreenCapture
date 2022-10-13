@@ -6,9 +6,7 @@
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
         Title="ScreenCaptureツール" Height="792.901" Width="1485.972" Closing="CloseWindow" Loaded="WindowLoad" Icon="DispIcon.jpeg"
-        WindowStyle="None"
-        AllowsTransparency="True"
-        Background="#00FFFFFF" Topmost="True" WindowState="Maximized">
+        >
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
