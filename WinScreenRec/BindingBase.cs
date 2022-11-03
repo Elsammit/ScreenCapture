@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Reactive.Disposables;
 
 
-namespace DesignatedAreaOCRApp
+namespace WinScreenRec
 {
     class BindingBase : INotifyPropertyChanged
     {

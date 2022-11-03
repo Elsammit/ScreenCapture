@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace DesignatedAreaOCRApp
+namespace WinScreenRec
 {
     public class DelegateCommand : ICommand
     {
