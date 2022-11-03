@@ -161,62 +161,7 @@ namespace WinScreenRec
         //    thread.Start();
         //}
 
-        private void MouseLeftBtnDwn(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (!isStartRec)
-            {
-                Canvas c = sender as Canvas;
-                var point = e.GetPosition(c);
-                bool buf = m_MousePosition.SetInit(point, RectArea);
-                if (buf)
-                {
-                    isDrag = buf;
-                    isDragMoved = false;
-                    c.CaptureMouse();
-                }
-            }
 
-        }
 
-        private void MouseMoving(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            if (isDrag)
-            {
-                Console.WriteLine("AAAAAAAAAAAA");
-                isDragMoved = true;
-
-                System.Windows.Point pos = e.GetPosition(RectArea);
-
-                System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
-
-                RectArea.Children.Remove(canvasStock);
-
-                m_MousePosition.DrawRectangle(pos, RectArea.Width, RectArea.Height,
-                    ref position, ref rectangle);
-
-                RectArea.Children.Add(rectangle);
-                canvasStock = rectangle;
-            }
-        }
-
-        /**
-         * エリア指定領域
-         * 
-         */
-        private void MouseLeftBtnUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (!isDragMoved)
-            {
-                RectArea.Children.Remove(canvasStock);
-                position = new WinScreenRec.MousePosition.Position();
-            }
-
-            if (isDrag)
-            {
-                Canvas c = sender as Canvas;
-                isDrag = false;
-                c.ReleaseMouseCapture();
-            }
-        }
     }
 }

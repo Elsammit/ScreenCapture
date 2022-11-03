@@ -11,6 +11,8 @@ using WinScreenRec;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using System.Windows.Threading;
+using Reactive.Bindings;
+using System.Windows.Input;
 
 namespace WinScreenRec
 {
@@ -21,6 +23,11 @@ namespace WinScreenRec
 
         bool isStartRec = false;
         bool isStartPrev = true;
+        //bool isDrag = false;
+        //bool isDragMoved = false;
+        double RectTop = 0.0;
+        double RectLeft = 0.0;
+        bool IsMouseDown = false;
         Thread thread;
 
         ImgProcess m_ImgProcess = new ImgProcess();
@@ -64,6 +71,76 @@ namespace WinScreenRec
             }
         }
 
+        private double _RectWidth = 0.0;
+        public double RectWidth
+        {
+            get
+            {
+                return _RectWidth;
+            }
+            set
+            {
+                _RectWidth = value;
+                OnPropertyChanged(nameof(RectWidth));
+            }
+        }
+
+        private double _RectHeight = 0.0;
+        public double RectHeight
+        {
+            get
+            {
+                return _RectHeight;
+            }
+            set
+            {
+                _RectHeight = value;
+                OnPropertyChanged(nameof(RectHeight));
+            }
+        }
+
+        private ReactiveCommand<Object> _MouseLeftBtnDwn = null;
+        public ReactiveCommand<Object> MouseLeftBtnDwn 
+        {
+            get
+            {
+                if (_MouseLeftBtnDwn == null)
+                {
+                    _MouseLeftBtnDwn = new ReactiveCommand<Object>().WithSubscribe(obj => {
+                        var ele = (IInputElement)obj;
+                        var pos = Mouse.GetPosition(ele);
+                        RectangleMargin = pos.X.ToString() + "," + pos.Y.ToString();
+                        Console.WriteLine("Start MakeRectangle");
+                        Console.WriteLine("X:{0}, Y:{1}", pos.X, pos.Y);
+
+                        IsMouseDown = true;
+                        RectTop = pos.Y;
+                        RectLeft = pos.X;
+                    });
+                }
+                return _MouseLeftBtnDwn;
+            }
+        }
+
+        private DelegateCommand _MouseLeftBtnUp = null;
+        public DelegateCommand MouseLeftBtnUp
+        {
+            get
+            {
+                if (_MouseLeftBtnUp == null)
+                {
+                    _MouseLeftBtnUp = new DelegateCommand(ButtonUpFunc, CanExecute);
+                }
+                return _MouseLeftBtnUp;
+            }
+        }
+
+        private void ButtonUpFunc()
+        {
+            Console.WriteLine("Button Up");
+            IsMouseDown = false;
+        }
+
         private System.Windows.Media.ImageSource _ImageArea = null;
         public System.Windows.Media.ImageSource ImageArea {
             get => _ImageArea;
@@ -71,6 +148,68 @@ namespace WinScreenRec
             {
                 _ImageArea = value;
                 OnPropertyChanged(nameof(ImageArea));
+            }
+        }
+
+        private String _RectangleMargin;
+        public String RectangleMargin
+        {
+            get
+            {
+                return _RectangleMargin;
+            }
+            set
+            {
+                _RectangleMargin = value;
+                OnPropertyChanged(nameof(RectangleMargin));
+            }
+        }
+
+        private ReactiveCommand<Object> _MouseMoveCommand = null;
+        public ReactiveCommand<Object> MouseMoveCommand
+        {
+            get
+            {
+                if (_MouseMoveCommand == null)
+                {
+                    _MouseMoveCommand = new ReactiveCommand<Object>().WithSubscribe(obj => {
+                        var ele = (IInputElement)obj;
+                        var pos = Mouse.GetPosition(ele);
+                        double Xpos = RectLeft;
+                        double Ypos = RectTop;
+                        if (IsMouseDown)
+                        {
+                            RectHeight = Math.Abs(pos.Y - RectTop);
+                            RectWidth = Math.Abs(pos.X - RectLeft);
+
+                            if ((RectTop > pos.Y) && (RectLeft > pos.X))
+                            {
+                                RectangleMargin = pos.X.ToString() + "," + pos.Y.ToString();
+                                Xpos = RectLeft;
+                                Ypos = RectTop;
+                            }
+                            else if (RectTop > pos.Y)
+                            {
+                                RectangleMargin = RectLeft.ToString() + "," + pos.Y.ToString();
+                                Xpos = pos.X;
+                                Ypos = RectTop;
+                            }
+                            else if (RectLeft > pos.X)
+                            {
+                                RectangleMargin = pos.X.ToString() + "," + RectTop.ToString();
+                                Xpos = RectLeft;
+                                Ypos = pos.Y;
+                            }
+
+                            Console.WriteLine("width:{0}, height:{1}", RectWidth, RectHeight);
+                            Console.WriteLine("Xpos:{0}, Ypos:{1}", Xpos, Ypos);
+                            //MainViewModel.m_controlModel.SetRect((int)Ypos, (int)Xpos, (int)RectHeight, (int)RectWidth);
+                        }
+                    });
+                }
+
+
+                return _MouseMoveCommand;
             }
         }
 

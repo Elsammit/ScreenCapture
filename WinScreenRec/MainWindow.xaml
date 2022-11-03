@@ -16,11 +16,21 @@
         <Canvas 
             x:Name="RectArea" 
             Margin="0,0,0,0" 
-            MouseLeftButtonDown="MouseLeftBtnDwn" 
-            MouseMove="MouseMoving" 
-            MouseLeftButtonUp="MouseLeftBtnUp" 
             Panel.ZIndex="1" Background="#0FFFFFFF" OpacityMask="Gray"
-        />
+        >
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseLeftButtonDown">
+                    <i:InvokeCommandAction Command="{Binding MouseLeftBtnDwn}" CommandParameter="{Binding ElementName=RectArea}" CommandName="CommandName" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseUp">
+                    <i:InvokeCommandAction Command="{Binding MouseLeftBtnUp}" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseMove">
+                    <i:InvokeCommandAction Command="{Binding MouseMoveCommand}" CommandParameter="{Binding ElementName=RectArea}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <Border BorderBrush="Red" BorderThickness="2" Width="{Binding RectWidth}" Height="{Binding RectHeight}" Margin="{Binding RectangleMargin}" Panel.ZIndex="-6" />
+        </Canvas>
         <Border BorderBrush="White" BorderThickness="1" Margin="5,5,5,5">
             <Image 
                 x:Name="ImgCap" 

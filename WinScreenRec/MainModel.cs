@@ -8,5 +8,6 @@ namespace WinScreenRec
 {
     class MainModel
     {
+
     }
 }
