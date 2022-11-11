@@ -8,15 +8,21 @@
         d:DataContext="{d:DesignInstance Type=local:MainViewModel}"
         mc:Ignorable="d"
         Title="ScreenCaptureツール" Height="792.901" Width="1485.972" Icon="DispIcon.jpeg"
+        Background="#FF050505"
         >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ClickCloseWindow}" PassEventArgsToCommand="True" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Canvas 
             x:Name="RectArea" 
-            Margin="0,0,0,0" 
-            Panel.ZIndex="1" Background="#0FFFFFFF" OpacityMask="Gray"
+            Margin="0,0,188,0" 
+            Panel.ZIndex="1" Background="#0FFFFFFF" OpacityMask="Gray" RenderTransformOrigin="0.602,0.503"
         >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseLeftButtonDown">
@@ -34,25 +40,17 @@
         <Border BorderBrush="White" BorderThickness="1" Margin="5,5,5,5">
             <Image 
                 x:Name="ImgCap" 
-                Source="{Binding ImageArea}"
-                HorizontalAlignment="Left" 
-                Height="720" 
-                VerticalAlignment="Top" 
-                Width="1280" 
-                Margin="0,0,0,0"
+                Source="{Binding ImageArea}" 
+                Margin="0,0,186,30"
             />
         </Border>
         <Button 
             x:Name="StartButton" 
             Content="{Binding StartBtnContent}" 
-            HorizontalAlignment="Left" 
-            Height="74" 
             Margin="1317,659,0,0" 
-            VerticalAlignment="Top" 
-            Width="136" 
             Command="{Binding StartBtnOnClick}" 
             RenderTransformOrigin="1.155,1.833" 
-            Panel.ZIndex="2" FontSize="24"
+            Panel.ZIndex="2" FontSize="24" HorizontalAlignment="Left" Width="136" Height="74" VerticalAlignment="Top"
         >
             <Button.RenderTransform>
                 <TransformGroup>
@@ -67,11 +65,7 @@
             x:Name="RecBlock" 
             BorderBrush="Black" 
             BorderThickness="1" 
-            HorizontalAlignment="Left" 
-            Height="56" 
-            Margin="1332,32,0,0" 
-            VerticalAlignment="Top" 
-            Width="122" 
+            Margin="1332,32,24,674" 
             CornerRadius="30" 
             Background="#FFFB4646"
             Opacity="{Binding RecBorderOpacity}"
@@ -96,7 +90,7 @@
             Height="40" 
             Width="76" 
             FontSize="24" 
-            Foreground="White"
+            Foreground="Black"
         />
     </Grid>
 </Window>

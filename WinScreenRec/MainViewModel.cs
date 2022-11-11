@@ -13,6 +13,7 @@ using Microsoft.Win32;
 using System.Windows.Threading;
 using Reactive.Bindings;
 using System.Windows.Input;
+using System.Linq;
 
 namespace WinScreenRec
 {
@@ -23,8 +24,6 @@ namespace WinScreenRec
 
         bool isStartRec = false;
         bool isStartPrev = true;
-        //bool isDrag = false;
-        //bool isDragMoved = false;
         double RectTop = 0.0;
         double RectLeft = 0.0;
         bool IsMouseDown = false;
@@ -99,6 +98,19 @@ namespace WinScreenRec
             }
         }
 
+        private DelegateCommand _ClickCloseWindow = null;
+        public DelegateCommand ClickCloseWindow
+        {
+            get
+            {
+                if (_ClickCloseWindow == null)
+                {
+                    _ClickCloseWindow = new DelegateCommand(CloseWindowFunc, CanExecute);
+                }
+                return _ClickCloseWindow;
+            }
+        }
+
         private ReactiveCommand<Object> _MouseLeftBtnDwn = null;
         public ReactiveCommand<Object> MouseLeftBtnDwn 
         {
@@ -107,15 +119,18 @@ namespace WinScreenRec
                 if (_MouseLeftBtnDwn == null)
                 {
                     _MouseLeftBtnDwn = new ReactiveCommand<Object>().WithSubscribe(obj => {
-                        var ele = (IInputElement)obj;
-                        var pos = Mouse.GetPosition(ele);
-                        RectangleMargin = pos.X.ToString() + "," + pos.Y.ToString();
-                        Console.WriteLine("Start MakeRectangle");
-                        Console.WriteLine("X:{0}, Y:{1}", pos.X, pos.Y);
+                        if (!isStartRec)
+                        {
+                            var ele = (IInputElement)obj;
+                            var pos = Mouse.GetPosition(ele);
+                            RectangleMargin = pos.X.ToString() + "," + pos.Y.ToString();
+                            Console.WriteLine("Start MakeRectangle");
+                            Console.WriteLine("X:{0}, Y:{1}", pos.X, pos.Y);
 
-                        IsMouseDown = true;
-                        RectTop = pos.Y;
-                        RectLeft = pos.X;
+                            IsMouseDown = true;
+                            RectTop = pos.Y;
+                            RectLeft = pos.X;
+                        }
                     });
                 }
                 return _MouseLeftBtnDwn;
@@ -201,8 +216,19 @@ namespace WinScreenRec
                                 Ypos = pos.Y;
                             }
 
-                            Console.WriteLine("width:{0}, height:{1}", RectWidth, RectHeight);
-                            Console.WriteLine("Xpos:{0}, Ypos:{1}", Xpos, Ypos);
+                            var window = Application.Current.Windows.OfType<System.Windows.Window>().FirstOrDefault(w => w is MainWindow);
+                            var test = (Canvas)window.FindName("RectArea");
+
+                            position.width = (int)(RectWidth * (SystemParameters.PrimaryScreenWidth / test.ActualWidth));
+                            position.height = (int)(RectHeight * (SystemParameters.PrimaryScreenHeight / test.ActualHeight));
+                            position.top = (int)(Ypos * (SystemParameters.PrimaryScreenHeight / test.ActualHeight));
+                            position.left = (int)(Xpos * (SystemParameters.PrimaryScreenWidth / test.ActualWidth));
+                            
+                            Console.WriteLine("Width:{0}, Height:{1}", SystemParameters.PrimaryScreenWidth, SystemParameters.PrimaryScreenHeight);
+                            Console.WriteLine("Width2:{0}, Height2:{1}", test.ActualWidth, test.ActualHeight);
+                            
+                            //Console.WriteLine("width:{0}, height:{1}", RectWidth, RectHeight);
+                            //Console.WriteLine("Xpos:{0}, Ypos:{1}", Xpos, Ypos);
                             //MainViewModel.m_controlModel.SetRect((int)Ypos, (int)Xpos, (int)RectHeight, (int)RectWidth);
                         }
                     });
@@ -234,7 +260,8 @@ namespace WinScreenRec
         }
 
         private double _RecTimerOpacity = 0;
-        public double RecTimerOpacity {
+        public double RecTimerOpacity
+        {
             get => _RecTimerOpacity;
             set
             {
@@ -279,6 +306,11 @@ namespace WinScreenRec
             StartBtnContent = "録画停止";
             RecBorderOpacity = 100;
             RecTimerOpacity = 100;
+        }
+
+        private void CloseWindowFunc()
+        {
+            isStartPrev = false;
         }
 
         private bool CanExecute()
@@ -330,6 +362,7 @@ namespace WinScreenRec
                     BitmapSizeOptions.FromEmptyOptions());
 
                     RecTimerContent = minute.ToString("00") + ":" + sec.ToString("00");
+                    Console.WriteLine("RecTimerContent:{0}", RecTimerContent);
 
                     if (timerCnt >= 18000)
                     {
