@@ -43,24 +43,22 @@ namespace WinScreenRec
             InitVideoWriter(rect);
         }
 
-        public Bitmap GetCaptureImage(bool isStartRec, RECT rect)
+        public bool GetCaptureImage(bool isStartRec, RECT rect, ref System.Drawing.Bitmap screenBmp)
         {
-            //var screenBmp = new System.Drawing.Bitmap(
-            //        (int)SystemParameters.PrimaryScreenWidth, 1280,
-            //        System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                var screenBmp = new System.Drawing.Bitmap(
-            (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
-            System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            bool ret = true;
 
             var bmpGraphics = Graphics.FromImage(screenBmp);
             bmpGraphics.CopyFromScreen(0, 0, 0, 0, screenBmp.Size);
-            if(!WriteVideo(isStartRec, screenBmp, rect))
-            {
-                MessageBox.Show("正しくエリアを指定ください", "エリア指定エラー", 
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-            }
 
-            return screenBmp;
+            if (!WriteVideo(isStartRec, screenBmp, rect))
+            {
+                MessageBox.Show("正しくエリアを指定ください", "エリア指定エラー",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                ret = false;
+            }
+            bmpGraphics.Dispose();
+            //screenBmp.Dispose();
+            return ret;
         }
 
         private bool WriteVideo(bool isStartRec, Bitmap screenBmp, RECT rect)
@@ -77,14 +75,18 @@ namespace WinScreenRec
             }
             System.Drawing.Rectangle rectBuf = new System.Drawing.Rectangle(rect.left, rect.top,
                         capWidth, capHeight);
-            Bitmap bmp = screenBmp.Clone(rectBuf, screenBmp.PixelFormat);
-            Mat mat = BitmapConverter.ToMat(bmp).CvtColor(ColorConversionCodes.RGB2BGR);
-            if (isStartRec)
-            {
-                Cv2.CvtColor(mat, mat, ColorConversionCodes.BGR2RGB);
-                Cv2.Resize(mat, mat, new OpenCvSharp.Size(capWidth, capHeight));
-                writer.Write(mat);
-            }
+            //Bitmap bmp = screenBmp.Clone(rectBuf, screenBmp.PixelFormat);
+            //Mat mat = BitmapConverter.ToMat(bmp).CvtColor(ColorConversionCodes.RGB2BGR);
+            //if (isStartRec)
+            //{
+            //    Cv2.CvtColor(mat, mat, ColorConversionCodes.BGR2RGB);
+            //    Cv2.Resize(mat, mat, new OpenCvSharp.Size(capWidth, capHeight));
+            //    writer.Write(mat);
+            //}
+            //bmp.Dispose();
+            //mat.Dispose();
+            //mat.Release();
+
             return true;
         }
 
