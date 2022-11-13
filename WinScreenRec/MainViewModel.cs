@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Drawing;
 using System.Windows.Interop;
 using System.Threading;
-using OpenCvSharp;
-using OpenCvSharp.Extensions;
-using System.Runtime.InteropServices;
-using WinScreenRec;
-using System.Windows.Controls;
 using Microsoft.Win32;
-using System.Windows.Threading;
 using Reactive.Bindings;
 using System.Windows.Input;
-using System.Linq;
 
 namespace WinScreenRec
 {
@@ -24,18 +16,10 @@ namespace WinScreenRec
 
         bool isStartRec = false;
         bool isStartPrev = true;
-        double RectTop = 0.0;
-        double RectLeft = 0.0;
         bool IsMouseDown = false;
         Thread thread;
 
-        ImgProcess m_ImgProcess = new ImgProcess();
-        ImgProcess.RECT m_RECT = new ImgProcess.RECT();
-
-        MousePosition m_MousePosition = new MousePosition();
-        private UIElement canvasStock = new UIElement();
-        WinScreenRec.MousePosition.Position position =
-                    new WinScreenRec.MousePosition.Position();
+        MainModel m_MainModel = new MainModel();
 
         public MainViewModel()
         {
@@ -124,12 +108,11 @@ namespace WinScreenRec
                             var ele = (IInputElement)obj;
                             var pos = Mouse.GetPosition(ele);
                             RectangleMargin = pos.X.ToString() + "," + pos.Y.ToString();
-                            Console.WriteLine("Start MakeRectangle");
-                            Console.WriteLine("X:{0}, Y:{1}", pos.X, pos.Y);
+                            m_MainModel.RectangleMargin = RectangleMargin;
 
                             IsMouseDown = true;
-                            RectTop = pos.Y;
-                            RectLeft = pos.X;
+                            m_MainModel.RectTop = pos.Y;
+                            m_MainModel.RectLeft = pos.X;
                         }
                     });
                 }
@@ -152,7 +135,6 @@ namespace WinScreenRec
 
         private void ButtonUpFunc()
         {
-            Console.WriteLine("Button Up");
             IsMouseDown = false;
         }
 
@@ -180,6 +162,13 @@ namespace WinScreenRec
             }
         }
 
+        public void SetRectInformation(double rectHeight, double rectWidth, string rectMargin)
+        {
+            RectHeight = rectHeight;
+            RectWidth = rectWidth;
+            RectangleMargin = rectMargin;
+        }
+
         private ReactiveCommand<Object> _MouseMoveCommand = null;
         public ReactiveCommand<Object> MouseMoveCommand
         {
@@ -190,47 +179,7 @@ namespace WinScreenRec
                     _MouseMoveCommand = new ReactiveCommand<Object>().WithSubscribe(obj => {
                         var ele = (IInputElement)obj;
                         var pos = Mouse.GetPosition(ele);
-                        double Xpos = RectLeft;
-                        double Ypos = RectTop;
-                        if (IsMouseDown)
-                        {
-                            RectHeight = Math.Abs(pos.Y - RectTop);
-                            RectWidth = Math.Abs(pos.X - RectLeft);
-
-                            if ((RectTop > pos.Y) && (RectLeft > pos.X))
-                            {
-                                RectangleMargin = pos.X.ToString() + "," + pos.Y.ToString();
-                                Xpos = RectLeft;
-                                Ypos = RectTop;
-                            }
-                            else if (RectTop > pos.Y)
-                            {
-                                RectangleMargin = RectLeft.ToString() + "," + pos.Y.ToString();
-                                Xpos = pos.X;
-                                Ypos = RectTop;
-                            }
-                            else if (RectLeft > pos.X)
-                            {
-                                RectangleMargin = pos.X.ToString() + "," + RectTop.ToString();
-                                Xpos = RectLeft;
-                                Ypos = pos.Y;
-                            }
-
-                            var window = Application.Current.Windows.OfType<System.Windows.Window>().FirstOrDefault(w => w is MainWindow);
-                            var test = (Canvas)window.FindName("RectArea");
-
-                            position.width = (int)(RectWidth * (SystemParameters.PrimaryScreenWidth / test.ActualWidth));
-                            position.height = (int)(RectHeight * (SystemParameters.PrimaryScreenHeight / test.ActualHeight));
-                            position.top = (int)(Ypos * (SystemParameters.PrimaryScreenHeight / test.ActualHeight));
-                            position.left = (int)(Xpos * (SystemParameters.PrimaryScreenWidth / test.ActualWidth));
-                            
-                            Console.WriteLine("Width:{0}, Height:{1}", SystemParameters.PrimaryScreenWidth, SystemParameters.PrimaryScreenHeight);
-                            Console.WriteLine("Width2:{0}, Height2:{1}", test.ActualWidth, test.ActualHeight);
-                            
-                            //Console.WriteLine("width:{0}, height:{1}", RectWidth, RectHeight);
-                            //Console.WriteLine("Xpos:{0}, Ypos:{1}", Xpos, Ypos);
-                            //MainViewModel.m_controlModel.SetRect((int)Ypos, (int)Xpos, (int)RectHeight, (int)RectWidth);
-                        }
+                        m_MainModel.MakePosition(pos, IsMouseDown, SetRectInformation);
                     });
                 }
 
@@ -286,7 +235,7 @@ namespace WinScreenRec
                 // ダイアログを表示
                 if (dialog.ShowDialog() == true)
                 {
-                    m_ImgProcess.SetFilePath(dialog.FileName, m_RECT);
+                    m_MainModel.SetFilePath(dialog.FileName);
                     ButtonToRecStart();
                 }
             }
@@ -320,38 +269,16 @@ namespace WinScreenRec
 
         private void CaptureMovieAsync()
         {
-            int timerCnt = 0;
+            var bitmap = new System.Drawing.Bitmap(
+                (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             while (isStartPrev)
             {
-                if (position.width <= 0 || position.height <= 0)
-                {
-                    m_RECT.right = (int)SystemParameters.PrimaryScreenWidth;
-                    m_RECT.bottom = (int)SystemParameters.PrimaryScreenHeight;
-                    m_RECT.left = 0;
-                    m_RECT.top = 0;
-                }
-                else
-                {
-                    m_RECT.right = position.width + position.left;
-                    m_RECT.bottom = position.height + position.top;
-                    m_RECT.left = position.left;
-                    m_RECT.top = position.top;
-                }
-                var bitmap = m_ImgProcess.GetCaptureImage(isStartRec, m_RECT);
+                isStartPrev = m_MainModel.CaputureScreen(isStartRec, ref bitmap);
                 var hBitmap = bitmap.GetHbitmap();
 
-
-                if (isStartRec)
-                {
-                    timerCnt++;
-                }
-                else
-                {
-                    timerCnt = 0;
-                }
-
-                int sec = (timerCnt / 10) % 60;
-                int minute = (timerCnt / 10) / 60;
+                int sec = (m_MainModel.GetTimerCnt() / 10) % 60;
+                int minute = (m_MainModel.GetTimerCnt() / 10) / 60;
 
                 Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
@@ -362,24 +289,10 @@ namespace WinScreenRec
                     BitmapSizeOptions.FromEmptyOptions());
 
                     RecTimerContent = minute.ToString("00") + ":" + sec.ToString("00");
-                    Console.WriteLine("RecTimerContent:{0}", RecTimerContent);
-
-                    if (timerCnt >= 18000)
-                    {
-                        isStartRec = false;
-                        timerCnt = 0;
-
-                        //var win = new CustomMsgBox();
-                        //win.Owner = this;
-                        //win.ShowDialog();
-
-                        //ButtonToRecStop();
-
-                    }
                 }));
                 DeleteObject(hBitmap);
-                Cv2.WaitKey(80);
             }
+            bitmap.Dispose();
         }
 
     }

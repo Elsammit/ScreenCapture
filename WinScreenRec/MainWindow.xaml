@@ -90,7 +90,7 @@
             Height="40" 
             Width="76" 
             FontSize="24" 
-            Foreground="Black"
+            Foreground="White"
         />
     </Grid>
 </Window>

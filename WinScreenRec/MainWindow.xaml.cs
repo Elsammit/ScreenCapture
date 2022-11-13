@@ -1,15 +1,4 @@
-﻿using System;
-using System.Windows;
-//using System.Windows.Media.Imaging;
-//using System.Drawing;
-//using System.Windows.Interop;
-using System.Threading;
-//using OpenCvSharp;
-//using OpenCvSharp.Extensions;
-//using System.Runtime.InteropServices;
-//using WinScreenRec;
-using System.Windows.Controls;
-using Microsoft.Win32;
+﻿using System.Windows;
 
 namespace WinScreenRec
 {
