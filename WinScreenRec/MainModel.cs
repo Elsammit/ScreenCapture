@@ -107,8 +107,8 @@ namespace WinScreenRec
             {
                 isStartPrev = CaputureScreen(ref bitmap);
 
-                int sec = (GetTimerCnt() / 10) % 60;
-                int minute = (GetTimerCnt() / 10) / 60;
+                int sec = (GetTimerCnt() / 30) % 60;
+                int minute = (GetTimerCnt() / 30) / 60;
                 dispCapture(ref bitmap, minute, sec);
             }
             bitmap.Dispose();

@@ -283,30 +283,6 @@ namespace WinScreenRec
         private void CaptureMovieAsync()
         {
             m_MainModel.CaptureMovieAsync(DispCapture);
-            //var bitmap = new System.Drawing.Bitmap(
-            //    (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
-            //    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            //while (m_MainModel.isStartPrev)
-            //{
-            //    m_MainModel.isStartPrev = m_MainModel.CaputureScreen(ref bitmap);
-            //    var hBitmap = bitmap.GetHbitmap();
-
-            //    int sec = (m_MainModel.GetTimerCnt() / 10) % 60;
-            //    int minute = (m_MainModel.GetTimerCnt() / 10) / 60;
-
-            //    Application.Current.Dispatcher.Invoke((Action)(() =>
-            //    {
-            //        ImageArea = Imaging.CreateBitmapSourceFromHBitmap(
-            //        hBitmap,
-            //        IntPtr.Zero,
-            //        Int32Rect.Empty,
-            //        BitmapSizeOptions.FromEmptyOptions());
-
-            //        RecTimerContent = minute.ToString("00") + ":" + sec.ToString("00");
-            //    }));
-            //    DeleteObject(hBitmap);
-            //}
-            //bitmap.Dispose();
         }
 
     }

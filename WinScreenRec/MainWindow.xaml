@@ -74,10 +74,10 @@
             <TextBlock 
                 TextWrapping="Wrap" 
                 Text="REC" 
-                Margin="19,11" 
+                Margin="19,11,19,0" 
                 TextAlignment="Center" 
                 Foreground="White" 
-                FontSize="24"
+                FontSize="24" Height="32" VerticalAlignment="Top"
             />
         </Border>
         <Label 
