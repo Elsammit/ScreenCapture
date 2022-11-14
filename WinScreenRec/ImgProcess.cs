@@ -24,16 +24,17 @@ namespace WinScreenRec
             public int bottom;
         }
 
-        VideoWriter writer;
+        VideoWriter writer = null;
         string RecordFilePath = "";
         RECT m_recordData = new RECT();
+        Mat mat = new Mat();
+        Bitmap bmp = null;
 
         public void InitVideoWriter(RECT rect)
         {
-            //m_recordData = rect;
             int width = m_recordData.right - m_recordData.left;
             int height = m_recordData.bottom - m_recordData.top;
-            writer = new VideoWriter(RecordFilePath, FourCC.WMV1, 5,
+            writer = new VideoWriter(RecordFilePath, FourCC.WMV1, 30,
                     new OpenCvSharp.Size(width, height));
         }
 
@@ -43,24 +44,25 @@ namespace WinScreenRec
             InitVideoWriter(rect);
         }
 
-        public Bitmap GetCaptureImage(bool isStartRec, RECT rect)
+        public bool GetCaptureImage(bool isStartRec, RECT rect, ref System.Drawing.Bitmap screenBmp)
         {
-            var screenBmp = new System.Drawing.Bitmap(
-                    (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            
+            bool ret = true;
+
             var bmpGraphics = Graphics.FromImage(screenBmp);
             bmpGraphics.CopyFromScreen(0, 0, 0, 0, screenBmp.Size);
-            if(!WriteVideo(isStartRec, screenBmp, rect))
-            {
-                MessageBox.Show("正しくエリアを指定ください", "エリア指定エラー", 
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-            }
 
-            return screenBmp;
+            if (!WriteVideo(isStartRec, ref screenBmp, rect))
+            {
+                MessageBox.Show("正しくエリアを指定ください", "エリア指定エラー",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                ret = false;
+            }
+            bmpGraphics.Dispose();
+            
+            return ret;
         }
 
-        private bool WriteVideo(bool isStartRec, Bitmap screenBmp, RECT rect)
+        private bool WriteVideo(bool isStartRec, ref Bitmap screenBmp, RECT rect)
         {
             m_recordData = rect;
 
@@ -72,16 +74,26 @@ namespace WinScreenRec
                 Console.WriteLine(" size Error");
                 return false;
             }
-            System.Drawing.Rectangle rectBuf = new System.Drawing.Rectangle(rect.left, rect.top,
+            
+            Rectangle rectBuf = new System.Drawing.Rectangle(rect.left, rect.top,
                         capWidth, capHeight);
-            Bitmap bmp = screenBmp.Clone(rectBuf, screenBmp.PixelFormat);
-            Mat mat = BitmapConverter.ToMat(bmp).CvtColor(ColorConversionCodes.RGB2BGR);
+            bmp = screenBmp.Clone(rectBuf, screenBmp.PixelFormat);
+            mat = BitmapConverter.ToMat(bmp).CvtColor(ColorConversionCodes.RGB2BGR);
             if (isStartRec)
             {
                 Cv2.CvtColor(mat, mat, ColorConversionCodes.BGR2RGB);
                 Cv2.Resize(mat, mat, new OpenCvSharp.Size(capWidth, capHeight));
                 writer.Write(mat);
             }
+            else
+            {
+                if (writer != null && writer.IsOpened())
+                {
+                    writer.Release();
+                }
+            }
+            bmp.Dispose();
+
             return true;
         }
 
