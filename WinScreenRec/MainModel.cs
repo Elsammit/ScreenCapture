@@ -9,8 +9,9 @@ namespace WinScreenRec
     class MainModel
     {
 
-        ImgProcess m_ImgProcess = new ImgProcess();
+        ImgProcess m_ImgProcess = new ImgProcess(); // Image processing object.
 
+        // Recording possition.
         public struct Position
         {
             public int left;
@@ -21,41 +22,47 @@ namespace WinScreenRec
         Position position = new Position();
         ImgProcess.RECT m_RECT = new ImgProcess.RECT();
 
-        public double RectLeft { set; get; }
-        public double RectTop { set; get; }
-        public double RectHeight { set; get; }
-        public double RectWidth { set; get; }
-        public string RectangleMargin { set; get; }
+        public double RectLeft { set; get; }        // Recording area left.
+        public double RectTop { set; get; }         // Recording area top.
+        public double RectHeight { set; get; }      // Recording area height.
+        public double RectWidth { set; get; }       // Recording area width.
+        public string RectangleMargin { set; get; } // Display Rectangle area position.
 
-        public bool isStartRec { set; get; } = false;
-        public bool isStartPrev { set; get; } = true;
-        public bool IsMouseDown { set; get; } = false;
+        public bool isStartRec { set; get; } = false;   // Start record flag(start:true, not start:false).
+        public bool isStartPrev { set; get; } = true;   // Start preview flag(start:true, not start:false).
+        public bool IsMouseDown { set; get; } = false;  // Is mouse down ? (Yes:true, No:false).
 
+        // Timer count for screen display.
         int timerCnt = 0;
         public int GetTimerCnt()
         {
             return timerCnt;
         }
 
+        // Position get function..
         public Position Getposition()
         {
             return position;
         }
 
-        public ImgProcess.RECT GetRectInfo()
-        {
-            return m_RECT;
-        }
-
         public delegate void SetRectInformation(double rectHeight, double rectWidth, string rectMargin);
         public delegate void DispCapture(ref System.Drawing.Bitmap bitmap, int minute, int sec);
 
+        /// <summary>
+        /// Set record file path.
+        /// </summary>
+        /// <param name="fileName">record file path</param>
         public void SetFilePath(string fileName)
         {
             m_ImgProcess.SetFilePath(fileName, m_RECT);
         }
 
 
+        /// <summary>
+        /// calculate the cutting positoin and area.
+        /// </summary>
+        /// <param name="pos">cutting position</param>
+        /// <param name="setRectInformation">cutting area</param>
         public void MakePosition(System.Windows.Point pos, SetRectInformation setRectInformation)
         {
             double Xpos = RectLeft;
@@ -97,7 +104,10 @@ namespace WinScreenRec
             }
         }
 
-
+        /// <summary>
+        /// Capture movie
+        /// </summary>
+        /// <param name="dispCapture">callback function for displaying capture to wpf</param>
         public void CaptureMovieAsync(DispCapture dispCapture)
         {
             var bitmap = new System.Drawing.Bitmap(
@@ -114,6 +124,11 @@ namespace WinScreenRec
             bitmap.Dispose();
         }
 
+        /// <summary>
+        /// Caputure area function.
+        /// </summary>
+        /// <param name="bitmap">caputure image</param>
+        /// <returns></returns>
         public bool CaputureScreen(ref Bitmap bitmap)
         {
             bool ret = true;
