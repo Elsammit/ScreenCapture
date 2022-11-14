@@ -27,6 +27,10 @@ namespace WinScreenRec
         public double RectWidth { set; get; }
         public string RectangleMargin { set; get; }
 
+        public bool isStartRec { set; get; } = false;
+        public bool isStartPrev { set; get; } = true;
+        public bool IsMouseDown { set; get; } = false;
+
         int timerCnt = 0;
         public int GetTimerCnt()
         {
@@ -44,6 +48,7 @@ namespace WinScreenRec
         }
 
         public delegate void SetRectInformation(double rectHeight, double rectWidth, string rectMargin);
+        public delegate void DispCapture(ref System.Drawing.Bitmap bitmap, int minute, int sec);
 
         public void SetFilePath(string fileName)
         {
@@ -51,11 +56,11 @@ namespace WinScreenRec
         }
 
 
-        public void MakePosition(System.Windows.Point pos, bool isMouseDown, SetRectInformation setRectInformation)
+        public void MakePosition(System.Windows.Point pos, SetRectInformation setRectInformation)
         {
             double Xpos = RectLeft;
             double Ypos = RectTop;
-            if (isMouseDown)
+            if (IsMouseDown)
             {
                 RectHeight = Math.Abs(pos.Y - RectTop);
                 RectWidth = Math.Abs(pos.X - RectLeft);
@@ -92,7 +97,24 @@ namespace WinScreenRec
             }
         }
 
-        public bool CaputureScreen(bool isStartRec, ref Bitmap bitmap)
+
+        public void CaptureMovieAsync(DispCapture dispCapture)
+        {
+            var bitmap = new System.Drawing.Bitmap(
+                (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            while (isStartPrev)
+            {
+                isStartPrev = CaputureScreen(ref bitmap);
+
+                int sec = (GetTimerCnt() / 10) % 60;
+                int minute = (GetTimerCnt() / 10) / 60;
+                dispCapture(ref bitmap, minute, sec);
+            }
+            bitmap.Dispose();
+        }
+
+        public bool CaputureScreen(ref Bitmap bitmap)
         {
             bool ret = true;
 

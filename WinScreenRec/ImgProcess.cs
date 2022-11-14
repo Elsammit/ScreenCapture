@@ -24,7 +24,7 @@ namespace WinScreenRec
             public int bottom;
         }
 
-        VideoWriter writer;
+        VideoWriter writer = null;
         string RecordFilePath = "";
         RECT m_recordData = new RECT();
         Mat mat = new Mat();
@@ -34,7 +34,7 @@ namespace WinScreenRec
         {
             int width = m_recordData.right - m_recordData.left;
             int height = m_recordData.bottom - m_recordData.top;
-            writer = new VideoWriter(RecordFilePath, FourCC.WMV1, 5,
+            writer = new VideoWriter(RecordFilePath, FourCC.WMV1, 30,
                     new OpenCvSharp.Size(width, height));
         }
 
@@ -84,6 +84,13 @@ namespace WinScreenRec
                 Cv2.CvtColor(mat, mat, ColorConversionCodes.BGR2RGB);
                 Cv2.Resize(mat, mat, new OpenCvSharp.Size(capWidth, capHeight));
                 writer.Write(mat);
+            }
+            else
+            {
+                if (writer != null && writer.IsOpened())
+                {
+                    writer.Release();
+                }
             }
             bmp.Dispose();
 

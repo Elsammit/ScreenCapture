@@ -14,9 +14,6 @@ namespace WinScreenRec
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
 
-        bool isStartRec = false;
-        bool isStartPrev = true;
-        bool IsMouseDown = false;
         Thread thread;
 
         MainModel m_MainModel = new MainModel();
@@ -103,14 +100,14 @@ namespace WinScreenRec
                 if (_MouseLeftBtnDwn == null)
                 {
                     _MouseLeftBtnDwn = new ReactiveCommand<Object>().WithSubscribe(obj => {
-                        if (!isStartRec)
+                        if (!m_MainModel.isStartRec)
                         {
                             var ele = (IInputElement)obj;
                             var pos = Mouse.GetPosition(ele);
                             RectangleMargin = pos.X.ToString() + "," + pos.Y.ToString();
                             m_MainModel.RectangleMargin = RectangleMargin;
 
-                            IsMouseDown = true;
+                            m_MainModel.IsMouseDown = true;
                             m_MainModel.RectTop = pos.Y;
                             m_MainModel.RectLeft = pos.X;
                         }
@@ -135,7 +132,7 @@ namespace WinScreenRec
 
         private void ButtonUpFunc()
         {
-            IsMouseDown = false;
+            m_MainModel.IsMouseDown = false;
         }
 
         private System.Windows.Media.ImageSource _ImageArea = null;
@@ -179,7 +176,7 @@ namespace WinScreenRec
                     _MouseMoveCommand = new ReactiveCommand<Object>().WithSubscribe(obj => {
                         var ele = (IInputElement)obj;
                         var pos = Mouse.GetPosition(ele);
-                        m_MainModel.MakePosition(pos, IsMouseDown, SetRectInformation);
+                        m_MainModel.MakePosition(pos, SetRectInformation);
                     });
                 }
 
@@ -223,7 +220,7 @@ namespace WinScreenRec
         private void StartRecordFunc()
         {
             Console.WriteLine("Start Record Func");
-            if (isStartRec)
+            if (m_MainModel.isStartRec)
             {
                 ButtonToRecStop();
             }
@@ -243,7 +240,7 @@ namespace WinScreenRec
 
         private void ButtonToRecStop()
         {
-            isStartRec = false;
+            m_MainModel.isStartRec = false;
             StartBtnContent = "録画開始";
             RecBorderOpacity = 0;
             RecTimerOpacity = 0;
@@ -251,7 +248,7 @@ namespace WinScreenRec
 
         private void ButtonToRecStart()
         {
-            isStartRec = true;
+            m_MainModel.isStartRec = true;
             StartBtnContent = "録画停止";
             RecBorderOpacity = 100;
             RecTimerOpacity = 100;
@@ -259,7 +256,7 @@ namespace WinScreenRec
 
         private void CloseWindowFunc()
         {
-            isStartPrev = false;
+            m_MainModel.isStartPrev = false;
         }
 
         private bool CanExecute()
@@ -267,32 +264,49 @@ namespace WinScreenRec
             return true;
         }
 
+        public void DispCapture(ref System.Drawing.Bitmap bitmap, int minute, int sec)
+        {
+            var hBitmap = bitmap.GetHbitmap();
+            Application.Current.Dispatcher.Invoke((Action)(() =>
+            {
+                ImageArea = Imaging.CreateBitmapSourceFromHBitmap(
+                hBitmap,
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
+
+                RecTimerContent = minute.ToString("00") + ":" + sec.ToString("00");
+            }));
+            DeleteObject(hBitmap);
+        }
+
         private void CaptureMovieAsync()
         {
-            var bitmap = new System.Drawing.Bitmap(
-                (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            while (isStartPrev)
-            {
-                isStartPrev = m_MainModel.CaputureScreen(isStartRec, ref bitmap);
-                var hBitmap = bitmap.GetHbitmap();
+            m_MainModel.CaptureMovieAsync(DispCapture);
+            //var bitmap = new System.Drawing.Bitmap(
+            //    (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight,
+            //    System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            //while (m_MainModel.isStartPrev)
+            //{
+            //    m_MainModel.isStartPrev = m_MainModel.CaputureScreen(ref bitmap);
+            //    var hBitmap = bitmap.GetHbitmap();
 
-                int sec = (m_MainModel.GetTimerCnt() / 10) % 60;
-                int minute = (m_MainModel.GetTimerCnt() / 10) / 60;
+            //    int sec = (m_MainModel.GetTimerCnt() / 10) % 60;
+            //    int minute = (m_MainModel.GetTimerCnt() / 10) / 60;
 
-                Application.Current.Dispatcher.Invoke((Action)(() =>
-                {
-                    ImageArea = Imaging.CreateBitmapSourceFromHBitmap(
-                    hBitmap,
-                    IntPtr.Zero,
-                    Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions());
+            //    Application.Current.Dispatcher.Invoke((Action)(() =>
+            //    {
+            //        ImageArea = Imaging.CreateBitmapSourceFromHBitmap(
+            //        hBitmap,
+            //        IntPtr.Zero,
+            //        Int32Rect.Empty,
+            //        BitmapSizeOptions.FromEmptyOptions());
 
-                    RecTimerContent = minute.ToString("00") + ":" + sec.ToString("00");
-                }));
-                DeleteObject(hBitmap);
-            }
-            bitmap.Dispose();
+            //        RecTimerContent = minute.ToString("00") + ":" + sec.ToString("00");
+            //    }));
+            //    DeleteObject(hBitmap);
+            //}
+            //bitmap.Dispose();
         }
 
     }

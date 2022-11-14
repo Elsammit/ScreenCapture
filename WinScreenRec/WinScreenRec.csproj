@@ -159,8 +159,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BindingBase.cs" />
-    <Compile Include="ControlModel.cs" />
-    <Compile Include="ControlViewModel.cs" />
     <Compile Include="CustomMsgBox.xaml.cs">
       <DependentUpon>CustomMsgBox.xaml</DependentUpon>
     </Compile>
@@ -174,7 +172,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MousePosition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
