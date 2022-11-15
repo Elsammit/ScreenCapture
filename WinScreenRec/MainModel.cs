@@ -3,6 +3,7 @@ using System.Windows;
 using System.Drawing;
 using System.Windows.Controls;
 using System.Linq;
+using System.Threading;
 
 namespace WinScreenRec
 {
@@ -31,6 +32,17 @@ namespace WinScreenRec
         public bool isStartRec { set; get; } = false;   // Start record flag(start:true, not start:false).
         public bool isStartPrev { set; get; } = true;   // Start preview flag(start:true, not start:false).
         public bool IsMouseDown { set; get; } = false;  // Is mouse down ? (Yes:true, No:false).
+        public delegate void SetRectInformation(double rectHeight, double rectWidth, string rectMargin);
+        public delegate void DispCapture(ref System.Drawing.Bitmap bitmap, int minute, int sec);
+        public MainModel(DispCapture dispCapture)
+        {
+            Thread thread;
+            thread = new Thread(new ThreadStart(() =>
+            {
+                CaptureMovieAsync(dispCapture);
+            }));
+            thread.Start();
+        }
 
         // Timer count for screen display.
         int timerCnt = 0;
@@ -45,8 +57,7 @@ namespace WinScreenRec
             return position;
         }
 
-        public delegate void SetRectInformation(double rectHeight, double rectWidth, string rectMargin);
-        public delegate void DispCapture(ref System.Drawing.Bitmap bitmap, int minute, int sec);
+
 
         /// <summary>
         /// Set record file path.
