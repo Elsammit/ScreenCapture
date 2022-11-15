@@ -24,12 +24,16 @@ namespace WinScreenRec
             public int bottom;
         }
 
-        VideoWriter writer = null;
-        string RecordFilePath = "";
-        RECT m_recordData = new RECT();
-        Mat mat = new Mat();
+        VideoWriter writer = null;  // Video writer for recording
+        string RecordFilePath = ""; // Record file path.
+        RECT m_recordData = new RECT(); // Record area.
+        Mat mat = new Mat();            
         Bitmap bmp = null;
 
+        /// <summary>
+        /// Initialize video writer.
+        /// </summary>
+        /// <param name="rect">Cutting rectangle</param>
         public void InitVideoWriter(RECT rect)
         {
             int width = m_recordData.right - m_recordData.left;
@@ -38,12 +42,24 @@ namespace WinScreenRec
                     new OpenCvSharp.Size(width, height));
         }
 
+        /// <summary>
+        /// Setting file path to member parameter.
+        /// </summary>
+        /// <param name="filePath">record file path</param>
+        /// <param name="rect">cutting area</param>
         public void SetFilePath(string filePath, RECT rect)
         {
             RecordFilePath = filePath;
             InitVideoWriter(rect);
         }
 
+        /// <summary>
+        /// Get Caputure Image and write to video file.
+        /// </summary>
+        /// <param name="isStartRec">Is starting record ?</param>
+        /// <param name="rect">cutting area</param>
+        /// <param name="screenBmp">capture image</param>
+        /// <returns></returns>
         public bool GetCaptureImage(bool isStartRec, RECT rect, ref System.Drawing.Bitmap screenBmp)
         {
             bool ret = true;
@@ -62,6 +78,13 @@ namespace WinScreenRec
             return ret;
         }
 
+        /// <summary>
+        /// Video write to file.
+        /// </summary>
+        /// <param name="isStartRec">Is starting record ?</param>
+        /// <param name="rect">cutting area</param>
+        /// <param name="screenBmp">capture image</param>
+        /// <returns></returns>
         private bool WriteVideo(bool isStartRec, ref Bitmap screenBmp, RECT rect)
         {
             m_recordData = rect;

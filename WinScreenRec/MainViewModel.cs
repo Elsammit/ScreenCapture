@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
-using System.Threading;
 using Microsoft.Win32;
 using Reactive.Bindings;
 using System.Windows.Input;
@@ -14,20 +13,17 @@ namespace WinScreenRec
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
 
-        Thread thread;
-
-        MainModel m_MainModel = new MainModel();
+        MainModel m_MainModel;
 
         public MainViewModel()
         {
-            thread = new Thread(new ThreadStart(() =>
-            {
-                CaptureMovieAsync();
-            }));
-            thread.Start();
+            m_MainModel = new MainModel(DispCapture);
             ButtonToRecStop();
         }
 
+        /// <summary>
+        /// Start button content.
+        /// </summary>
         private String _StartBtnContent = "";
         public String StartBtnContent {
             get => _StartBtnContent;
@@ -38,6 +34,9 @@ namespace WinScreenRec
             }
         }
 
+        /// <summary>
+        /// Start button click function.
+        /// </summary>
         private DelegateCommand _StartBtnOnClick = null;
         public DelegateCommand StartBtnOnClick 
         {
@@ -216,7 +215,9 @@ namespace WinScreenRec
             }
         }
 
-
+        /// <summary>
+        /// Change start / stop process and select file path.
+        /// </summary>
         private void StartRecordFunc()
         {
             Console.WriteLine("Start Record Func");
@@ -238,6 +239,9 @@ namespace WinScreenRec
             }
         }
 
+        /// <summary>
+        /// Record stop from stop button.
+        /// </summary>
         private void ButtonToRecStop()
         {
             m_MainModel.isStartRec = false;
@@ -246,6 +250,9 @@ namespace WinScreenRec
             RecTimerOpacity = 0;
         }
 
+        /// <summary>
+        /// Record start from start button.
+        /// </summary>
         private void ButtonToRecStart()
         {
             m_MainModel.isStartRec = true;
@@ -254,6 +261,9 @@ namespace WinScreenRec
             RecTimerOpacity = 100;
         }
 
+        /// <summary>
+        /// Window close.
+        /// </summary>
         private void CloseWindowFunc()
         {
             m_MainModel.isStartPrev = false;
@@ -264,6 +274,12 @@ namespace WinScreenRec
             return true;
         }
 
+        /// <summary>
+        /// Display capture window.
+        /// </summary>
+        /// <param name="bitmap">capture image</param>
+        /// <param name="minute"></param>
+        /// <param name="sec"></param>
         public void DispCapture(ref System.Drawing.Bitmap bitmap, int minute, int sec)
         {
             var hBitmap = bitmap.GetHbitmap();
@@ -279,11 +295,5 @@ namespace WinScreenRec
             }));
             DeleteObject(hBitmap);
         }
-
-        private void CaptureMovieAsync()
-        {
-            m_MainModel.CaptureMovieAsync(DispCapture);
-        }
-
     }
 }
